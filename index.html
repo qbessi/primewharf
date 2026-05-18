@@ -868,10 +868,7 @@
 
     <div class="form-card">
       <h3>Send us a message</h3>
-      <form action="https://formsubmit.co/primewharf@gmail.com" method="POST">
-        <input type="hidden" name="_subject" value="New enquiry from Prime Wharf website">
-        <input type="hidden" name="_next" value="https://primewharf.co.uk/#contact">
-        <input type="hidden" name="_captcha" value="false">
+      <form id="contactForm">
         <div class="form-row">
           <div class="form-group">
             <label for="fname">First name</label>
@@ -905,10 +902,11 @@
           <label for="msg">Message</label>
           <textarea id="msg" name="message" placeholder="Tell us about your property, preferred schedule, and any special requests…"></textarea>
         </div>
-        <button type="submit" class="btn btn-teal btn-full">
+        <button type="submit" class="btn btn-teal btn-full" id="submitBtn">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
           Send message
         </button>
+        <p id="formMsg" style="display:none; margin-top:14px; font-size:.9rem; color:var(--teal); font-weight:600; text-align:center;"></p>
       </form>
     </div>
   </div>
@@ -991,6 +989,36 @@
   window.addEventListener('scroll', () => {
     nav.classList.toggle('scrolled', window.scrollY > 20);
   }, { passive: true });
+
+  // Contact form → mailto
+  document.getElementById('contactForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const fname   = document.getElementById('fname').value.trim();
+    const lname   = document.getElementById('lname').value.trim();
+    const email   = document.getElementById('email').value.trim();
+    const phone   = document.getElementById('phone').value.trim();
+    const service = document.getElementById('service').value;
+    const msg     = document.getElementById('msg').value.trim();
+
+    const body = [
+      'Name: '    + fname + ' ' + lname,
+      'Email: '   + email,
+      'Phone: '   + (phone || 'Not provided'),
+      'Service: ' + (service || 'Not specified'),
+      '',
+      'Message:',
+      msg || '(none)'
+    ].join('\n');
+
+    const subject = 'New enquiry from ' + fname + ' ' + lname;
+    window.location.href = 'mailto:primewharf@gmail.com'
+      + '?subject=' + encodeURIComponent(subject)
+      + '&body='    + encodeURIComponent(body);
+
+    const msgEl = document.getElementById('formMsg');
+    msgEl.textContent = 'Your email client should open now — just hit send!';
+    msgEl.style.display = 'block';
+  });
 </script>
 </body>
 </html>
